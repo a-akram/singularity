@@ -1,0 +1,139 @@
+Bootstrap: docker
+From: ubuntu:18.04
+
+%help
+    This Singularity definition contains Ubuntu 18.04, Anaconda 3 and TensorFlow 2.3.
+    
+    Use below commands:
+
+    *Build singularity container* - This will build an immutable container (recommended in production environments):
+    sudo singularity build <mysingularity_name>.sif Singularity.def
+
+    *To build development container* - Where you can install additional components as needed:
+    sudo singularity build --sandbox <mysingularity_name>/ Singularity.def
+
+    *Shell into singularity container*
+    sudo singularity shell --contain --writable <mysingularity_name>/
+
+    --writable option must be provided to install any packages.
+    You cannot use --writable option with immutable containers
+
+    *Exec into singularity container*- To run any command from host inside container
+    sudo singularity exec --contain <mysingularity_name>/ env
+
+    *Run singularity container in background and access notebook* - This will run %starscript section commands
+    sudo singularity instance start <mysingularity_name>/ demotest
+
+    *Check running instances* - This should list demotest instance started above
+    sudo singularity instance list
+
+    *Get the token to access notebook locally* - copy the listed token
+    sudo singularity exec instance://demotest jupyter notebook list
+
+    If you are running singularity instance in remote machine.
+    Execute below command to establish tunnel to forward traffic from remote machine to localhost
+    Ex: ssh -L 8888:localhost:8888 <remote_machine_name>
+
+    Access the given url from your localhost and enter the access token
+    Ex: localhost:8888
+    
+    *Run Jupyter from SeSEGPU Container*
+    singularity run --nv sesegpu.sif -c "conda activate tfg && jupyter lab --ip=127.0.0.1 --port=$1"
+	
+
+
+%files
+
+    tfp.yaml, tfg.yaml
+
+
+%post -c /bin/bash
+
+	apt-get update && apt-get -y upgrade
+	apt-get -y install \
+		build-essential \
+		wget \
+		bzip2 \
+		ca-certificates \
+		libglib2.0-0 \
+		libxext6 \
+		libsm6 \
+		libxrender1 \
+		git
+	
+	
+	rm -rf /var/lib/apt/lists/*
+	apt-get clean
+	
+	# We can reconfigure default shell to DASH
+	# dpkg-reconfigure dash
+	
+	# *** Installing Anaconda3 (Silent Mode) ***
+	# wget -c https://repo.anaconda.com/archive/Anaconda3-2020.02-Linux-x86_64.sh -O $HOME/anaconda.sh
+	# bash $HOME/anaconda.sh -bpf $HOME/anaconda
+	# wget -c https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+	# bash miniconda.sh -bp /opt/anaconda
+	wget -c https://repo.anaconda.com/archive/Anaconda3-2020.02-Linux-x86_64.sh -O anaconda.sh
+	bash anaconda.sh -bp /opt/anaconda
+	
+	# Load Anaconda Environment Variables
+	. /opt/anaconda/etc/profile.d/conda.sh
+	
+	# Add/append "conda-forge" channel (if needed)
+	# conda config --append channels conda-forge
+	
+	# Update Conda
+	conda update conda
+	
+	# *** Anaconda Environment ***
+	# Either, create an environment from .YAML files.
+	# conda env create -f tfg.yaml
+	
+	# OR, create an environment from scratch. Find compatible versions of
+	# cudatoolkit (v-10.1.0), cudnn (7.6.0) and tensorflow-gpu (2.3.0)
+	
+	conda activate base
+	conda create --name tfg --clone base -y
+	conda activate tfg
+	
+	# conda install -c anaconda cudnn tensorflow==2.3.0=gpu* -y
+	
+	# OR	
+	conda search cudatoolkit
+	conda install cudatoolkit=10.1.243 -y
+	conda search cudnn
+	conda install cudnn=7.6.0=cuda10.1_0 -y
+	pip install tensorflow-gpu==2.3.0
+	
+	# *** Setup Conda Init ***
+	mv ~/.bashrc ~/.bashrcold
+	conda init
+	cat ~/.bashrc >> /etc/conda.init
+	echo conda activate tfg >> /etc/conda.init
+	conda clean -t
+	mv ~/.bashrcold ~/.bashrc
+	
+	
+	# *** Remove Installation Files ***
+	rm -f *-Linux-x86_64.sh *.yaml *.deb
+
+
+%environment
+
+	action="${1##*/}"
+	if [ "$action" = "shell" ]; then
+		if [ "${SINGULARITY_SHELL:-}" = "/bin/bash" ]; then
+			set -- --noprofile --init-file /etc/conda.init
+		elif test -z "${SINGULARITY_SHELL:-}"; then
+			export SINGULARITY_SHELL=/bin/bash
+			set -- --noprofile --init-file /etc/conda.init
+		fi
+	fi
+
+%runscript
+
+	BASH_ENV=/etc/conda.init exec /bin/bash --noprofile --init-file /etc/conda.init "$@"
+ 
+ 
+%labels
+    Author: "Adeel Akram <adeel.chep@gmail.com>"
