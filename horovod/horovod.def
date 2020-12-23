@@ -130,6 +130,9 @@ From: nvidia/cuda:10.1-devel-ubuntu18.04
 	mv horovod/examples/ /examples && \
     rm -rf horovod
 
+# -----------------------------------------------------------------------------
+# 		Following Sections are Almost Same as horovod.def, exatrkx.def etc.
+# ----------------------------------------------------------------------------- 
 
 %test
 

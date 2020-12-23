@@ -102,7 +102,7 @@ From: ubuntu:18.04
 	conda search cudatoolkit
 	conda install cudatoolkit=10.1.243 -y
 	conda search cudnn
-	conda install cudnn=7.6.0=cuda10.1_0 -y
+	conda install cudnn=7.6.5=cuda10.1_0 -y
 	pip install tensorflow-gpu==2.3.0
 	
 	# *** Setup Conda Init ***
