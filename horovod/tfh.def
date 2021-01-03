@@ -90,7 +90,7 @@ From: nvidia/cuda:10.1-devel-ubuntu18.04
 	pip install torch==${PYTORCH_VERSION} torchvision==${TORCHVISION_VERSION} -f https://download.pytorch.org/whl/torch_stable.html
 	
 	# *** Install TrackML Library
-    pip install 'trackml@https://github.com/LAL/trackml-library/tarball/master#egg=trackml-3'
+    pip install 'trackml@ https://github.com/LAL/trackml-library/tarball/master#egg=trackml-3'
     	
 	# *** Install the IB verbs
     apt install -y --no-install-recommends libibverbs*

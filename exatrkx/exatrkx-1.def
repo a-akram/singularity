@@ -1,0 +1,141 @@
+# HEADER
+BootStrap: docker
+From: nvidia/cuda:10.1-devel-ubuntu18.04
+
+# SECTIONS
+    
+%post
+	
+	# *** Environment Variables During Build
+	
+    export CUDNN_VERSION=7.6.5.32-1+cuda10.1		# 7.6.5.32-1+cuda10.1 (current), 7.5.1.10-1+cuda10.1
+	export NCCL_VERSION=2.5.6-1+cuda10.1			# 2.8.3-1+cuda10.1 (worked), 2.5.6-1+cuda10.1 (current)
+	
+	export PYTHON_VERSION=3.8						# 3.8 (current)
+    export TENSORFLOW_VERSION=2.3.0					# 2.3.0 (current)
+    export PYTORCH_VERSION=1.6.0+cu101              # 1.7.0+cu101, 1.6.0+cu101 (current)
+    export TORCHVISION_VERSION=0.7.0+cu101          # 0.8.1+cu101, 0.7.0+cu101 (current)
+    
+    export CUDA=cu101                               # For PyTorch Geometric
+    export TORCH=1.6.0                              # For PyTorch Geometric
+    
+    # *** Build Container from Base Image
+    
+	# *** Add CUDA Repo. to install CUDA Toolkit 10.1 (skip, already installed.)
+	# echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64 /" > /etc/apt/sources.list.d/cuda.list
+	
+	# *** Add Nividia Machine Learning Repo. to install CuDNN, NCCL2 etc.
+	echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64 /" > /etc/apt/sources.list.d/nvidia-ml.list
+	
+	# *** Update, Upgrade and Install Dependencies
+	apt update && apt upgrade -y
+	
+	apt install -y \
+		build-essential \
+        git \
+        curl \
+        vim \
+        wget \
+        ca-certificates
+     
+	# *** Installing Anaconda3 (Silent Mode) ***
+	wget -c https://repo.anaconda.com/archive/Anaconda3-2020.02-Linux-x86_64.sh -O anaconda.sh
+	bash anaconda.sh -bp /opt/anaconda
+	
+	# *** Load Anaconda Environment Variables
+	. /opt/anaconda/etc/profile.d/conda.sh
+	
+	# *** Add/Append Channels
+	conda config --append channels pytorch
+	conda config --append channels conda-forge
+	
+
+	# *** Update Conda
+	conda update conda
+	
+	# *** Create Environment
+	conda create --name exatrkx python=3.8
+    conda activate exatrkx
+
+	
+	# *** NVCC: Install nvcc_linux-64 when cudatoolkit installed w/ APT
+	conda install nvcc_linux-64=10.1 cudnn=7.6 nccl=2.5 cupti=10.1 cmake=3.16 mpi4py=3.0 cxx-compiler=1.0 bokeh=1.4 nodejs=13 -y
+	
+	# Let's test if env still remains active
+	echo "----Testing----"
+	echo $CONDA_PREFIX
+	
+	conda activate exatrkx
+	
+	# *** Install Additional Packages
+    conda install scikit-learn scipy numpy pandas matplotlib seaborn jupyter tqdm pyyaml ipywidgets -y
+    pip install --user 'trackml@ https://github.com/LAL/trackml-library/tarball/master#egg=trackml-3'
+    
+	# *** Install Deep Learning Frameworks
+    pip install tensorflow-gpu==2.3.0
+    pip install torch==1.6.0+cu101 torchvision==0.7.0+cu101 -f https://download.pytorch.org/whl/torch_stable.html
+    pip install pytorch-lighting==1.0.2 graph_nets==1.1 faiss-gpu -y
+    
+	# *** PyTorch Geometric
+    pip install torch-scatter -f https://pytorch-geometric.com/whl/torch-${TORCH}+${CUDA}.html
+    pip install torch-sparse -f https://pytorch-geometric.com/whl/torch-${TORCH}+${CUDA}.html
+    pip install torch-cluster -f https://pytorch-geometric.com/whl/torch-${TORCH}+${CUDA}.html
+    pip install torch-spline-conv -f https://pytorch-geometric.com/whl/torch-${TORCH}+${CUDA}.html
+    pip install torch-geometric
+    
+    # *** Horovod
+	HOROVOD_CUDA_HOME=$CUDA_HOME && \
+    HOROVOD_NCCL_HOME=$CONDA_PREFIX  && \
+    HOROVOD_CPU_OPERATIONS=MPI  && \
+    HOROVOD_GPU_OPERATIONS=NCCL  && \
+    HOROVOD_WITH_MPI=1  && \
+    HOROVOD_WITHOUT_GLOO=1  && \
+    HOROVOD_WITHOUT_PYTORCH=1  && \
+    HOROVOD_WITH_TENSORFLOW=1  && \
+    pip install horovod==0.20 jupyterlab-nvdashboard==0.2.* jupyter-tensorboard==0.2.* --no-binary=horovod
+	
+	jupyter labextension install --no-build jupyterlab-nvdashboard
+    jupyter labextension install --no-build jupyterlab_tensorboard
+    jupyter lab build
+    
+    horovodrun --check-build
+    
+	# *** Setup Conda Init ***
+	mv ~/.bashrc ~/.bashrcold
+	conda init
+	cat ~/.bashrc >> /etc/conda.init
+	echo conda activate tfg >> /etc/conda.init
+	conda clean -t
+	mv ~/.bashrcold ~/.bashrc
+	
+	# *** Remove Installation Files ***
+	rm -f *-Linux-x86_64.sh *.yaml *.deb
+	
+
+%environment
+
+	action="${1##*/}"
+	if [ "$action" = "shell" ]; then
+		if [ "${SINGULARITY_SHELL:-}" = "/bin/bash" ]; then
+			set -- --noprofile --init-file /etc/conda.init
+		elif test -z "${SINGULARITY_SHELL:-}"; then
+			export SINGULARITY_SHELL=/bin/bash
+			set -- --noprofile --init-file /etc/conda.init
+		fi
+	fi	
+
+%runscript
+
+    BASH_ENV=/etc/conda.init exec /bin/bash --noprofile --init-file /etc/conda.init "$@"
+
+%labels
+
+    Author: "Adeel Akram <adeel.chep@gmail.com>"
+
+%help
+    
+    This Singularity definition contains Ubuntu 18.04, TensorFlow 2.3.0, PyTorch 1.7 w/ CUDATOOLKIT, CuDNN, NCCL2 etc.
+    Moreover, everything is installed in the system e.g. python3, pip3, tensorflow, pytorch, openmpi and horovod.
+    
+    Note that, base Ubuntu 18.04 docker image already have CUDA 10.1 pre-installed.
+ 

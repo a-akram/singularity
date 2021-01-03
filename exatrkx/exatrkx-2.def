@@ -37,7 +37,7 @@ From: nvidia/cuda:10.1-devel-ubuntu18.04
 	
 	# *** Environment Variables During Build
     export CUDNN_VERSION=7.6.5.32-1+cuda10.1		# 7.6.5.32-1+cuda10.1 (current), 7.5.1.10-1+cuda10.1
-	export NCCL_VERSION=2.8.3-1+cuda10.1			# 2.8.3-1+cuda10.1 (current), 2.7.8-1+cuda10.1 (worked), 2.6.4-1+cuda10.1 (worked), 2.5.6-1+cuda10.1 (worked)
+	export NCCL_VERSION=2.5.6-1+cuda10.1			# 2.8.3-1+cuda10.1 (worked), 2.5.6-1+cuda10.1 (current)
 	export PYTHON_VERSION=3.8						# 3.8 (current)
     export TENSORFLOW_VERSION=2.3.0					# 2.3.0 (current)
     export PYTORCH_VERSION=1.6.0+cu101              # 1.7.0+cu101, 1.6.0+cu101 (current)
@@ -83,15 +83,34 @@ From: nvidia/cuda:10.1-devel-ubuntu18.04
     python get-pip.py && \
     rm get-pip.py
 	
+
 	# *** Install TensorFlow
-    pip install tensorflow-gpu==${TENSORFLOW_VERSION} pandas jupyterlab tqdm h5py==2.10.0
+    pip install tensorflow-gpu==${TENSORFLOW_VERSION}
     
     # *** Install PyTorch
 	pip install torch==${PYTORCH_VERSION} torchvision==${TORCHVISION_VERSION} -f https://download.pytorch.org/whl/torch_stable.html
 	
+	# *** Install PyTorch Lightning, Faiss-GPU and Graph_Nets
+	pip install pytorch-lightning==1.0.2 faiss-gpu graph-nets==1.1.0
+	
 	# *** Install TrackML Library
     pip install 'trackml@https://github.com/LAL/trackml-library/tarball/master#egg=trackml-3'
-    	
+    
+    # *** Install PyTorch Geometric
+    export CUDA=cu101
+	export TORCH=1.6.0
+	pip install torch-scatter==latest+${CUDA} -f https://pytorch-geometric.com/whl/torch-${TORCH}.html
+	pip install torch-sparse==latest+${CUDA} -f https://pytorch-geometric.com/whl/torch-${TORCH}.html
+	pip install torch-cluster==latest+${CUDA} -f https://pytorch-geometric.com/whl/torch-${TORCH}.html
+	pip install torch-spline-conv==latest+${CUDA} -f https://pytorch-geometric.com/whl/torch-${TORCH}.html
+	pip install torch-geometric
+	
+	# *** Additional Packages
+	pip install scikit-learn scipy numpy pandas matplotlib seaborn jupyterlab jupyter-tensorboard tqdm pyyaml ipywidgets h5py==2.10.0 bokeh=1.4 nodejs=13
+	
+	# *** Install OpenMPI (before or after openmip or skip ???)
+	# pip install mpi4py
+	
 	# *** Install the IB verbs
     apt install -y --no-install-recommends libibverbs*
     apt install -y --no-install-recommends ibverbs-utils librdmacm* infiniband-diags libmlx4* libmlx5* libnuma*
@@ -111,7 +130,7 @@ From: nvidia/cuda:10.1-devel-ubuntu18.04
 	
 	# Install Horovod, temporarily using CUDA stubs
     ldconfig /usr/local/cuda-10.1/targets/x86_64-linux/lib/stubs && \
-    HOROVOD_GPU_ALLREDUCE=NCCL HOROVOD_WITH_TENSORFLOW=1 HOROVOD_WITHOUT_PYTORCH=1 HOROVOD_WITHOUT_MXNET=1 pip install --no-cache-dir horovod && \
+    HOROVOD_GPU_ALLREDUCE=NCCL HOROVOD_WITH_TENSORFLOW=1 HOROVOD_WITH_PYTORCH=1 HOROVOD_WITHOUT_MXNET=1 pip install --no-cache-dir horovod && \
     ldconfig
 
 	# Configure OpenMPI to run good defaults:
@@ -130,6 +149,9 @@ From: nvidia/cuda:10.1-devel-ubuntu18.04
 	mv horovod/examples/ /examples && \
     rm -rf horovod
 
+# -----------------------------------------------------------------------------
+# 		Following Sections are Almost Same as horovod.def, exatrkx.def etc.
+# ----------------------------------------------------------------------------- 
 
 %test
 
