@@ -328,7 +328,7 @@ HOROVOD_GPU_OPERATIONS=NCCL  && \
 HOROVOD_WITH_MPI=1  && \
 pip install --no-cache-dir horovod==0.19.* jupyterlab-nvdashboard==0.2.* jupyter-tensorboard==0.2.* --no-binary=horovod
 
-[SAME, Not Checked w/ --no-cache-dir]
+[SAME, Worked]
 ```
 
 ### (+) - Post Build
