@@ -1,6 +1,8 @@
 ## Horovod in Conda
 
-See details to build _**HOROVOD**_ with `conda` environment in `horovod.md` file. Following is the summary of instructions specific to `exatrkx` environment (same but with additional packages).
+See step by step details to build _**HOROVOD**_ with `conda` environment in `singularity/horovod/hvd.md` file. 
+
+Following is the summary of instructions specific to `exatrkx` environment (same but with additional packages). Intructions are located in `singularity/horovod/exatrkx.md`.
 
 ## Summary (exatrkx)
 ---
@@ -85,6 +87,8 @@ pip install horovod==0.19.* jupyterlab-nvdashboard==0.2.* jupyter-tensorboard==0
 [Worked]
 ```
 
+**OR**
+
 ```bash
 #!/bin/bash
 HOROVOD_CUDA_HOME=$CUDA_HOME && \
@@ -93,26 +97,20 @@ HOROVOD_GPU_OPERATIONS=NCCL  && \
 HOROVOD_WITH_MPI=1  && \
 pip install horovod==0.19.* jupyterlab-nvdashboard==0.2.* jupyter-tensorboard==0.2.* --no-binary=horovod
 
-[SAME,Worked]
+[SAME, Worked]
 ```
-
 
 **OR**
 
 ```bash
-# Example
-pip uninstall horovod
+#!/bin/bash
 HOROVOD_CUDA_HOME=$CUDA_HOME && \
 HOROVOD_NCCL_HOME=$CONDA_PREFIX  && \
-HOROVOD_CPU_OPERATIONS=MPI  && \
 HOROVOD_GPU_OPERATIONS=NCCL  && \
 HOROVOD_WITH_MPI=1  && \
-HOROVOD_WITHOUT_GLOO=1  && \
-HOROVOD_WITHOUT_PYTORCH=1  && \
-HOROVOD_WITH_TENSORFLOW=1  && \
-pip install --no-cache-dir horovod
+pip install --no-cache-dir horovod==0.19.* jupyterlab-nvdashboard==0.2.* jupyter-tensorboard==0.2.* --no-binary=horovod
 
-[Not Checked]
+[SAME, Not Checked w/ --no-cache-dir]
 ```
 
 ### (+) - Post Build

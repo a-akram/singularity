@@ -1,6 +1,8 @@
 ## Horovod in Conda
 
-See details to build _**HOROVOD**_ with `conda` environment in `horovod.md` file. Following is the summary of instructions specific to `exatrkx` environment (same but with additional packages).
+See step by step details to build _**HOROVOD**_ with `conda` environment in `singularity/horovod/hvd.md` file. 
+
+Following is the summary of instructions specific to `tfh` environment (same but with additional packages). Intructions are located in `singularity/horovod/tfh.md`.
 
 
 ## Summary (tfh)
@@ -48,25 +50,11 @@ pip install scikit-learn scipy numpy pandas matplotlib seaborn jupyterlab notebo
 
 ```bash
 # TensorFlow
-pip install tensorflow-gpu==2.3.0
+pip install tensorflow-gpu==2.4.0
 ```
 
 ### (+) Install Horovod
-
-```bash
-# CUDA on Linux (.bashrc or .bash_profile)
-# export CUDA_HOME=/usr/local/cuda
-# export PATH=$CUDA_HOME/bin:$PATH
-# export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
-
-# Important HOROVOD Variables
-# export ENV_PREFIX=$CONDA_PREFIX
-# export HOROVOD_CUDA_HOME=$CUDA_HOME
-# export HOROVOD_NCCL_HOME=$ENV_PREFIX
-# export HOROVOD_GPU_OPERATIONS=NCCL
-```
-
-**OR**
+---
 
 ```bash
 #!/bin/bash
@@ -93,27 +81,21 @@ HOROVOD_GPU_OPERATIONS=NCCL  && \
 HOROVOD_WITH_MPI=1  && \
 pip install horovod==0.19.* jupyterlab-nvdashboard==0.2.* jupyter-tensorboard==0.2.* --no-binary=horovod
 
-[SAME,Worked]
+[SAME, Worked]
 ```
 
 **OR**
 
 ```bash
-# Example
-pip uninstall horovod
+#!/bin/bash
 HOROVOD_CUDA_HOME=$CUDA_HOME && \
 HOROVOD_NCCL_HOME=$CONDA_PREFIX  && \
-HOROVOD_CPU_OPERATIONS=MPI  && \
 HOROVOD_GPU_OPERATIONS=NCCL  && \
 HOROVOD_WITH_MPI=1  && \
-HOROVOD_WITHOUT_GLOO=1  && \
-HOROVOD_WITHOUT_PYTORCH=1  && \
-HOROVOD_WITH_TENSORFLOW=1  && \
-pip install --no-cache-dir horovod
+pip install --no-cache-dir horovod==0.19.* jupyterlab-nvdashboard==0.2.* jupyter-tensorboard==0.2.* --no-binary=horovod
 
-[Not Tested]
+[SAME, Not Checked w/ --no-cache-dir]
 ```
-
 
 ### (+) Post Build
 

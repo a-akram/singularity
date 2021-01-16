@@ -275,7 +275,6 @@ pip install torch-geometric
 ### (+) - Install Horovod
 ---
 
-
 ```bash
 # CUDA on Linux (.bashrc or .bash_profile)
 # export CUDA_HOME=/usr/local/cuda
@@ -288,6 +287,7 @@ pip install torch-geometric
 # export HOROVOD_NCCL_HOME=$ENV_PREFIX
 # export HOROVOD_GPU_OPERATIONS=NCCL
 ```
+
 **OR**
 
 ```bash
@@ -304,6 +304,7 @@ pip install horovod==0.19.* jupyterlab-nvdashboard==0.2.* jupyter-tensorboard==0
 
 [Worked]
 ```
+
 **OR**
 
 ```bash
@@ -314,24 +315,20 @@ HOROVOD_GPU_OPERATIONS=NCCL  && \
 HOROVOD_WITH_MPI=1  && \
 pip install horovod==0.19.* jupyterlab-nvdashboard==0.2.* jupyter-tensorboard==0.2.* --no-binary=horovod
 
-[SAME,Worked]
+[SAME, Worked]
 ```
-
 
 **OR**
 
 ```bash
-# Example
-pip uninstall horovod
+#!/bin/bash
 HOROVOD_CUDA_HOME=$CUDA_HOME && \
 HOROVOD_NCCL_HOME=$CONDA_PREFIX  && \
-HOROVOD_CPU_OPERATIONS=MPI  && \
 HOROVOD_GPU_OPERATIONS=NCCL  && \
 HOROVOD_WITH_MPI=1  && \
-HOROVOD_WITHOUT_GLOO=1  && \
-HOROVOD_WITHOUT_PYTORCH=1  && \
-HOROVOD_WITH_TENSORFLOW=1  && \
-pip install --no-cache-dir horovod
+pip install --no-cache-dir horovod==0.19.* jupyterlab-nvdashboard==0.2.* jupyter-tensorboard==0.2.* --no-binary=horovod
+
+[SAME, Not Checked w/ --no-cache-dir]
 ```
 
 ### (+) - Post Build
