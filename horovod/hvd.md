@@ -42,7 +42,7 @@ There are two ways to get NVCC along with CUDATOOLKIT.
 ### (+) Method # 1
 
 - Install [CUDA 10.1](https://developer.nvidia.com/cuda-10.1-download-archive-update2) on Linux (Ubuntu) which has NVCC installed. More precisely it `10.1.243`, 2nd update.
-- Install [nvcc_linux-64](https://anaconda.org/conda-forge/nvcc_linux-64) meta-package from conda-forge repository which will configure conda environment to use CUDA+NVCC from Linux OS.
+- Install [nvcc_linux-64=10.1](https://anaconda.org/conda-forge/nvcc_linux-64) meta-package from conda-forge which will configure conda environment to use [NVCC with CUDA 10.1]() from Linux OS (If Cuda 10.1 is already installed on Ubuntu 18.04 which also include NVCC).
 - Install [CuDNN](), [NCCL]() using conda install.
 
 ```bash
