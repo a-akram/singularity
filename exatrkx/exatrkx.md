@@ -51,17 +51,31 @@ pip install scikit-learn scipy numpy pandas matplotlib seaborn jupyterlab notebo
 # Pip Packages of Frameworks + Additional 
 pip install tensorflow-gpu==2.3.0
 pip install torch==1.6.0+cu101 torchvision==0.7.0+cu101 -f https://download.pytorch.org/whl/torch_stable.html
-pip install pytorch-lightning==1.0.2 faiss-gpu graph_nets==1.1
+pip install pytorch-lightning==1.0.2 faiss-gpu==1.6.3 graph_nets==1.1
 ```
+**_NOTE:_** `faiss-gpu==1.6.3`, higher version doesn't work with exatrkx code (see `utils_torch.py`).
+
 
 ### (+) - Install PyTorch Geometric
 ---
+
+Follow official documentation of [pytorch-geometric](https://pytorch-geometric.readthedocs.io/en/latest/notes/installation.html) for installation.
+
+
+```bash
+# cuda=10.1, pytorch=1.6.0
+pip install --no-index torch-scatter -f https://pytorch-geometric.com/whl/torch-1.6.0+cu101.html
+pip install --no-index torch-sparse -f https://pytorch-geometric.com/whl/torch-1.6.0+cu101.html
+pip install --no-index torch-cluster -f https://pytorch-geometric.com/whl/torch-1.6.0+cu101.html
+pip install --no-index torch-spline-conv -f https://pytorch-geometric.com/whl/torch-1.6.0+cu101.html
+pip install torch-geometric
+```
+**OR**
 
 ```bash
 #!/bin/bash
 CUDA=cu101
 TORCH=1.6.0
-
 pip install torch-scatter -f https://pytorch-geometric.com/whl/torch-${TORCH}+${CUDA}.html
 pip install torch-sparse -f https://pytorch-geometric.com/whl/torch-${TORCH}+${CUDA}.html
 pip install torch-cluster -f https://pytorch-geometric.com/whl/torch-${TORCH}+${CUDA}.html
