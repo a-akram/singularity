@@ -43,7 +43,10 @@ pip install tensorflow==2.3.0
 
 ```bash
 # essential packages (conda)
-conda install scikit-learn scipy numpy pandas matplotlib seaborn jupyter tqdm pyyaml ipywidgets
+conda install scikit-learn scipy numpy pandas matplotlib seaborn tqdm pyyaml ipywidgets jupyterlab notebook jupyter-tensorboard
+
+# OR use Pip
+pip install scikit-learn scipy numpy pandas matplotlib seaborn tqdm pyyaml ipywidgets jupyterlab notebook jupyter-tensorboard
 ```
 ## (4) - Installing TrackML from VCS (Git)
 

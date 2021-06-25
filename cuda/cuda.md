@@ -56,7 +56,7 @@ echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x8
 echo "deb https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64 /" | sudo tee /etc/apt/sources.list.d/cuda-ml.list
 ```
 
-## 3._ Install CUDA 10.1 Packages_
+## 3._Install CUDA 10.1 Packages_
 ---
 
 ```bash
