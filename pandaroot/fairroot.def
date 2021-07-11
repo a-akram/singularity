@@ -1,0 +1,47 @@
+# HEADER
+Bootstrap: localimage
+From: /home/adeel/current/containers/fairsoft.sif
+
+# SECTIONS
+%post
+
+    # *** Setting Up FairSoft
+    export SIMPATH=/fairsoft/install
+    
+    # *** Setting up FairRoot
+    mkdir -p /fairroot/src /fairroot/build /fairroot/install
+    cd /fairroot
+    git clone -b v18.6.3 https://github.com/FairRootGroup/FairRoot.git src
+    
+    # Build and Install, either this
+    # cmake -S ./src -B ./build -DCMAKE_DISABLE_FIND_PACKAGE_yaml-cpp=ON -DCMAKE_INSTALL_PREFIX=./install
+    # cmake --build ./build -j8   # note install is empty
+    # cd ./build && make install -j8  # run make install exclusively
+    # cd ..
+    
+    # Or, do the following
+    cd ./build
+    cmake -DCMAKE_INSTALL_PREFIX=../install ../src
+    make install -j8
+    cd ..
+
+    # *** Test Installation
+    . ./build/config.sh -p
+    
+    # *** Build Tests
+    # cmake --build ./build --target test
+    
+    # *** Cleanup
+    rm -rf /fairroot/src
+    rm -rf /fairroot/build
+
+%labels
+
+    Author: "Adeel Akram <adeel.akram@physics.uu.se>"
+    Location: Uppsala University, Sweden.
+    Date: 11-07-2021
+ 
+%help
+    
+    The FairRoot container based on FairSoft container. It should be used as a base image to install PandaRoot.
+ 
