@@ -10,63 +10,50 @@ From: /home/adeel/current/containers/fairroot.sif
 
 %post
     
-    export SIMPATH=/fairsoft/install
-    export FAIRROOTPATH=/fairroot/install
-    
-    # TODO: Fix FairRoot container. Do "make install" and "export FAIRROOTPATH=/fairroot/install". 
-    # Untill then install it first before setting up PandaRoot.
-    
-    # *** Setting up FairRoot (install was missing)
-    cd /fairroot/build
-    make install -j8
-    
-    ls $SIMPATH
-    ls $FAIRROOTPATH
-    
-    
     # *** Setting up PandaRoot
     mkdir /pandaroot/build /pandaroot/install
     
-    # Build and Install, either this
+    # *** Build PandaRoot
     # cd /pandaroot
     # cmake -S ./v12.0.3 -B ./build -DCMAKE_INSTALL_PREFIX=./install
     # cmake --build ./build -j8   # note install is empty
-    # cd ./build && make install -j8  # run make install exclusively
+    
+    # *** Install PandaRoot
+    # cd ./build && make install -j8
     # cd ..
 
-    # OR, do the following
+    # OR, Build & Install PandaRoot
     cd /pandaroot/build
     cmake -DCMAKE_INSTALL_PREFIX=../install ../v12.0.3
-    
-    echo "Running Make..."
     make -j8 && make install
     
-    
-    # Run from Installation
-    . /pandaroot/install/bin/config.sh -p
-
-    
     # *** Cleanup
-    rm -rf /fairsoft/src /fairsoft/build
-    rm -rf /fairroot/src /fairroot/build
-    rm -rf /pandaroot/src /pandaroot/build
+    rm -rf /pandaroot/src 
+    rm -rf /pandaroot/build
    
 %environment
-
-    source /pandaroot/install/bin/config.sh -p
-
+    
+    action="${1##*/}"
+	if [ "$action" = "shell" ]; then
+		if [ "${SINGULARITY_SHELL:-}" = "/bin/bash" ]; then
+			set -- --noprofile --init-file /pandaroot/install/bin/config.sh
+		elif test -z "${SINGULARITY_SHELL:-}"; then
+			export SINGULARITY_SHELL=/bin/bash
+			set -- --noprofile --init-file /pandaroot/install/bin/config.sh
+		fi
+	fi
+    
+    # source /pandaroot/install/bin/config.sh -p
+    
 %runscript
-
-    echo "Arguments Received: $*"
-    exec "$@"
-
+    
+    BASH_ENV=/pandaroot/install/bin/config.sh exec /bin/bash --noprofile --init-file /pandaroot/install/bin/config.sh -p "$@"
 
 
 %labels
 
     Author: "Adeel Akram <adeel.akram@physics.uu.se>"
-    Location: Uppsala University, Sweden.
-    Date: 11-07-2021
+    Dated: 11-07-2021
  
 %help
     
