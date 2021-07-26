@@ -33,21 +33,12 @@ From: /home/adeel/current/containers/fairroot.sif
    
 %environment
     
-    action="${1##*/}"
-	if [ "$action" = "shell" ]; then
-		if [ "${SINGULARITY_SHELL:-}" = "/bin/bash" ]; then
-			set -- --noprofile --init-file /pandaroot/install/bin/config.sh
-		elif test -z "${SINGULARITY_SHELL:-}"; then
-			export SINGULARITY_SHELL=/bin/bash
-			set -- --noprofile --init-file /pandaroot/install/bin/config.sh
-		fi
-	fi
-    
-    # source /pandaroot/install/bin/config.sh -p
+    # Export PandaRoot
+    source /pandaroot/install/bin/config.sh -p
     
 %runscript
     
-    BASH_ENV=/pandaroot/install/bin/config.sh exec /bin/bash --noprofile --init-file /pandaroot/install/bin/config.sh -p "$@"
+    exec /bin/bash --noprofile "$@"
 
 
 %labels
@@ -58,4 +49,3 @@ From: /home/adeel/current/containers/fairroot.sif
 %help
     
     PandaRoot container based on FairSoft and FairRoot containers.
- 
