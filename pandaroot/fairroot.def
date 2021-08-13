@@ -6,7 +6,7 @@ From: /home/adeel/current/containers/fairsoft.sif
 %post
     
     # *** Setting Up FairSoft
-    # export SIMPATH=/fairsoft/install
+    export SIMPATH=/fairsoft/install
     
     # *** Setting up FairRoot
     mkdir -p /fairroot/src /fairroot/build /fairroot/install
@@ -37,4 +37,4 @@ From: /home/adeel/current/containers/fairsoft.sif
 %environment
 
     # Export FairRoot
-    export FAIRROOTPATH=/fairroot/install
+    # export FAIRROOTPATH=/fairroot/install

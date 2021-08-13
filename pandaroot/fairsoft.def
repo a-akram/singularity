@@ -37,4 +37,4 @@ From: ubuntu:18.04
 %environment
 
     # Export FairSoft
-    export SIMPATH=/fairsoft/install
+    # export SIMPATH=/fairsoft/install

@@ -10,6 +10,10 @@ From: /home/adeel/current/containers/fairroot.sif
 
 %post
     
+    # *** Export FairSoft & FairRoot
+    export SIMPATH=/fairsoft/install
+    export FAIRROOTPATH=/fairroot/install
+    
     # *** Setting up PandaRoot
     mkdir /pandaroot/build /pandaroot/install
     
