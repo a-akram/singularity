@@ -1,39 +1,39 @@
 # HEADER
 Bootstrap: localimage
-From: /home/adeel/current/containers/fairsoft.sif
+From: fairsoft.sif
 
 # SECTIONS
 %post
-    
+
     # *** Setting Up FairSoft
     export SIMPATH=/fairsoft/install
-    
+
     # *** Setting up FairRoot
     mkdir -p /fairroot/src /fairroot/build /fairroot/install
     cd /fairroot
     git clone -b v18.6.3 https://github.com/FairRootGroup/FairRoot.git src
-    
+
     # *** Build FairRoot
     # cmake -S ./src -B ./build -DCMAKE_DISABLE_FIND_PACKAGE_yaml-cpp=ON -DCMAKE_INSTALL_PREFIX=./install
     # cmake --build ./build -j8
-    
+
     # *** Install FairRoot
     # cd ./build && make install -j8  
     # cd ..
-    
+
     # OR, Build & Install FairRoot
     cd ./build
     cmake -DCMAKE_INSTALL_PREFIX=../install ../src -DCMAKE_DISABLE_FIND_PACKAGE_yaml-cpp=ON
     make install -j8
     cd ..
-        
+
     # *** Build Tests
     # cmake --build ./build --target test
-    
+
     # *** Cleanup
     rm -rf /fairroot/src
     rm -rf /fairroot/build
-    
+
 %environment
 
     # Export FairRoot

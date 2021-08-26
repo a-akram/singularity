@@ -1,53 +1,91 @@
-## Singularity Container
-Let's use a Singularity container provided by **SeSEGPU**.
+## **Singularity Container**
 
-### Create Container
+## (+) Fetching Base Images from DockerHub
 
-```bash
-$ sudo singularity build sesegpu.sif sesegpu_nividia.def
-$ sudo singularity build --sandbox sesegpu.sif sesegpu_nividia.def
-```	
-
-### Run Container
-```bash
-$ singularity run --nv ~/current/sesegpu.sif -c "conda activate tf-gpu && jupyter lab"
-```
-
-## Install TensorFlow w/ GPUs (In Def file)
-
-**From:** https://www.tensorflow.org/install/source#tested_build_configurations
-
-|Version	| Python version |Compiler	| Build tools |cuDNN | CUDA |
-|-----------|----------------|----------|-------------|------|------|
-tensorflow-2.3.0 |	3.5-3.8	 |GCC 7.3.1	| Bazel 3.1.0 |7.6	 |10.1
-
-
-## Conda Environment
+The important thing to note is the fetching the base image for the container _e.g._ `From: debian:buster` or `From: ubuntu:bionic` will fetch Debian 10.10 and Ubuntu 18.04 LTS. Important headers are the following:
 
 ```bash
-conda activate base
-conda create --name tf-gpu-test --clone base -y
-conda activate tf-gpu-test
-conda install -c anaconda cudnn tensorflow==2.2.0=gpu* -y
+# Fetch Ubuntu 18.04 LTS
+Bootstrap: docker
+From: ubuntu:bionic              # Either, use name of OSDistro
 
-# OR, custom install of cudatoolkit, cudnn and tensorflow-gpu (conda & pip)
-conda search cudatoolkit
-conda install cudatoolkit=10.1.168 -y
-
-conda search cudnn
-conda install cudnn=7.6.0=cuda10.1_0 -y
+Bootstrap: docker
+From: ubuntu:18.04               # Or, use numeral of OSDistro
 ```
 
 ```bash
-# Install latest version of tensorflow-gpu
-pip install tensorflow-gpu
+# Fetch Debian 10
+Bootstrap: docker
+From: debian:buster              # Either, use name of OSDistro
 
-# OR install a specific version
-pip install tensorflow-gpu==2.3.0
+Bootstrap: docker
+From: ubuntu:10.10               # Or, use numeral of OSDistro
+```
 
-# OR, upgrade an older version to latest one.
-pip install --upgrade tensorflow-gpu
+## (+) Fetching Base Images from Singularity
 
-# Remove Any older installation
-pip uninstall tensorflow-gpu -y
+
+```bash
+# Fetch Ubuntu 18.04 LTS
+Bootstrap: library
+From: ubuntu:bionic              # Either, use name of OSDistro
+
+Bootstrap: library
+From: ubuntu:18.04               # Or, use numeral of OSDistro
+```
+
+```bash
+# Fetch Debian 10
+Bootstrap: library
+From: debian:buster              # Either, use name of OSDistro
+
+Bootstrap: library
+From: ubuntu:10.10               # Or, use numeral of OSDistro
+```
+
+
+
+## (+) Example Definition
+
+```bash
+# HEADER
+Bootstrap: docker
+From: debian:buster
+
+# SECTIONS
+%post
+
+    # *** OS Upgrade & Install
+    apt update && apt upgrade -y
+    apt install -y \
+        build-essential \
+        git \
+        curl \
+        vim \
+        wget \
+        cmake \
+        ca-certificates
+
+    # *** Setting Up FairSoft
+    mkdir -p /fairsoft/src /fairsoft/build /fairsoft/install
+    cd /fairsoft
+    git clone -b apr21p1 https://github.com/FairRootGroup/FairSoft src
+    
+    src/legacy/setup-ubuntu.sh
+    src/bootstrap-cmake.sh /usr/local
+
+    cmake -S ./src -B ./build -C ./src/FairSoftConfig.cmake -DCMAKE_INSTALL_PREFIX=./install
+    cmake --build ./build -j8
+
+    # *** Test Installation
+    du -hs /fairsoft/install
+
+    # *** Cleanup
+    rm -rf /fairsoft/src
+    rm -rf /fairsoft/build
+
+%environment
+
+    # Export FairSoft
+    # export SIMPATH=/fairsoft/install
 ```

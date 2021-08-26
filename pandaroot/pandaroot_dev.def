@@ -6,7 +6,7 @@ From: fairroot.sif
 %setup
 
     mkdir ${SINGULARITY_ROOTFS}/pandaroot
-    cp -R ./v12.0.3 ${SINGULARITY_ROOTFS}/pandaroot
+    cp -R ./dev ${SINGULARITY_ROOTFS}/pandaroot
 
 %post
 
@@ -19,7 +19,7 @@ From: fairroot.sif
 
     # *** Build PandaRoot
     # cd /pandaroot
-    # cmake -S ./v12.0.3 -B ./build -DCMAKE_INSTALL_PREFIX=./install
+    # cmake -S ./dev -B ./build -DCMAKE_INSTALL_PREFIX=./install
     # cmake --build ./build -j8   # note install is empty
 
     # *** Install PandaRoot
@@ -28,7 +28,7 @@ From: fairroot.sif
 
     # OR, Build & Install PandaRoot
     cd /pandaroot/build
-    cmake -DCMAKE_INSTALL_PREFIX=../install ../v12.0.3
+    cmake -DCMAKE_INSTALL_PREFIX=../install ../dev
     make -j8 && make install
 
     # *** Cleanup

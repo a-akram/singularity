@@ -23,13 +23,13 @@ From: ubuntu:18.04
     
     src/legacy/setup-ubuntu.sh
     src/bootstrap-cmake.sh /usr/local
-    
+
     cmake -S ./src -B ./build -C ./src/FairSoftConfig.cmake -DCMAKE_INSTALL_PREFIX=./install
     cmake --build ./build -j8
-    
+
     # *** Test Installation
     du -hs /fairsoft/install
-    
+
     # *** Cleanup
     rm -rf /fairsoft/src
     rm -rf /fairsoft/build
