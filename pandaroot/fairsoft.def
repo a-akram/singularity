@@ -19,7 +19,7 @@ From: ubuntu:18.04
     # *** Setting Up FairSoft
     mkdir -p /fairsoft/src /fairsoft/build /fairsoft/install
     cd /fairsoft
-    git clone -b nov20p1 https://github.com/FairRootGroup/FairSoft src
+    git clone -b apr21 https://github.com/FairRootGroup/FairSoft src
     
     src/legacy/setup-ubuntu.sh
     src/bootstrap-cmake.sh /usr/local
@@ -30,9 +30,13 @@ From: ubuntu:18.04
     # *** Test Installation
     du -hs /fairsoft/install
 
-    # *** Cleanup
+    # *** Cleanup FairSoft
     rm -rf /fairsoft/src
     rm -rf /fairsoft/build
+    
+    # *** Cleanup Ubuntu
+    apt -y clean && \
+    rm -rf /var/lib/apt/lists/*
 
 %environment
 

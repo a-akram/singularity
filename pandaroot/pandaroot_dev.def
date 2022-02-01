@@ -31,9 +31,13 @@ From: fairroot.sif
     cmake -DCMAKE_INSTALL_PREFIX=../install ../dev
     make -j8 && make install
 
-    # *** Cleanup
+    # *** Cleanup PandaRoot
     rm -rf /pandaroot/src 
     rm -rf /pandaroot/build
+    
+     # *** Cleanup Ubuntu
+    apt -y clean && \
+    rm -rf /var/lib/apt/lists/*
 
 %environment
 

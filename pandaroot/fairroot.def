@@ -30,9 +30,13 @@ From: fairsoft.sif
     # *** Build Tests
     # cmake --build ./build --target test
 
-    # *** Cleanup
+    # *** Cleanup FairRoot
     rm -rf /fairroot/src
     rm -rf /fairroot/build
+    
+    # *** Cleanup Ubuntu
+    apt -y clean && \
+    rm -rf /var/lib/apt/lists/*
 
 %environment
 

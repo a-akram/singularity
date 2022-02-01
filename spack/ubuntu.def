@@ -1,0 +1,24 @@
+# HEADER
+Bootstrap: docker
+From: ubuntu:18.04
+
+# SECTIONS
+%post
+
+    # *** OS Upgrade & Install
+    export DEBIAN_FRONTEND=noninteractive
+    apt update && apt upgrade -y
+    apt install -y --no-install-recommends \
+        build-essential \
+        python3 python3-dev python3-pip \
+        bzip2 \
+        git \
+        curl \
+        vim \
+        wget \
+        cmake \
+        ca-certificates
+
+    # *** Cleanup OS
+    apt clean && \
+    rm -rf /var/lib/apt/lists/*
