@@ -35,8 +35,8 @@ From: fairroot.sif
     rm -rf /pandaroot/src 
     rm -rf /pandaroot/build
     
-     # *** Cleanup Ubuntu
-    apt -y clean && \
+    # *** Cleanup Ubuntu
+    apt-get -y clean && \
     rm -rf /var/lib/apt/lists/*
 
 %environment

@@ -35,7 +35,7 @@ From: fairsoft.sif
     rm -rf /fairroot/build
     
     # *** Cleanup Ubuntu
-    apt -y clean && \
+    apt-get -y clean && \
     rm -rf /var/lib/apt/lists/*
 
 %environment

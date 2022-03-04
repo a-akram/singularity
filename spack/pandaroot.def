@@ -1,0 +1,51 @@
+# HEADER
+Bootstrap: docker
+From: ubuntu:18.04
+
+# SECTIONS
+%post
+
+    # *** OS Upgrade & Install
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get update
+    apt-get -y upgrade
+    apt-get -y --no-install-recommends install sed curl ca-certificates wget xz-utils bzip2 gzip unzip tar file
+    apt-get -y --no-install-recommends install python3 g++ gcc gfortran make patch git
+    apt-get -y --no-install-recommends install cmake hostname lsb-release
+    apt-get -y clean
+    
+    # *** Setting up FairSoft
+    
+    # Clone the Repo (dev branch)
+    git clone -b dev https://github.com/FairRootGroup/FairSoft
+    cd FairSoft
+    
+    # Run the Setup
+    source thisfairsoft.sh --setup
+    
+    # Activate Spack in your current shell
+    source thisfairsoft.sh
+    
+    # Verify Spack
+    spack repo list
+    
+    # *** Installing FairSoft as Spack Environment
+    spack env create fairsoft env/fairsoft/sim/spack.yaml
+    spack env list
+    pack env activate -p fairsoft
+    spack install
+    
+    # *** Cleanup Ubuntu
+    apt-get -y clean && \
+    rm -rf /var/lib/apt/lists/*
+
+   
+%help
+
+    Singularity container for building PyTorch using Spack package manager.
+    
+    Build the container from definition file.
+    $ sudo singularity build spack.sif spack.def
+    
+    One can build a sandbox container as the following
+    $ sudo singularity build --sandbox spack.sif spack.def

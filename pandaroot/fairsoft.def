@@ -6,15 +6,12 @@ From: ubuntu:18.04
 %post
 
     # *** OS Upgrade & Install
-    apt update && apt upgrade -y
-    apt install -y \
-        build-essential \
-        git \
-        curl \
-        vim \
-        wget \
-        cmake \
-        ca-certificates
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get update
+    apt-get -y upgrade
+    apt-get -y --no-install-recommends install sed curl ca-certificates wget xz-utils bzip2 gzip unzip tar file
+    apt-get -y --no-install-recommends install python3 g++ gcc gfortran make patch git
+    apt-get -y --no-install-recommends install cmake hostname lsb-release
 
     # *** Setting Up FairSoft
     mkdir -p /fairsoft/src /fairsoft/build /fairsoft/install
@@ -35,7 +32,7 @@ From: ubuntu:18.04
     rm -rf /fairsoft/build
     
     # *** Cleanup Ubuntu
-    apt -y clean && \
+    apt-get -y clean && \
     rm -rf /var/lib/apt/lists/*
 
 %environment
