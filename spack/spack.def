@@ -5,7 +5,7 @@ From: ubuntu:18.04
 # SECTIONS
 %post
 
-    # *** OS Upgrade & Install
+     # *** OS Upgrade
     export DEBIAN_FRONTEND=noninteractive
     apt-get update
     apt-get -y upgrade
@@ -24,20 +24,6 @@ From: ubuntu:18.04
     # *** Testing
     spack spec zlib
     
-    # *** Cleanup Ubuntu
+    # *** OS Cleanup
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/*
-
-%runscript
-
-    echo "Ubuntu 18.04 with Spack"
-    
-%help
-
-    Singularity container for building PyTorch using Spack package manager.
-    
-    Build the container from definition file.
-    $ sudo singularity build spack.sif spack.def
-    
-    One can build a sandbox container as the following
-    $ sudo singularity build --sandbox spack.sif spack.def
