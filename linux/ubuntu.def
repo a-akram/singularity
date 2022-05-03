@@ -1,39 +1,30 @@
 # HEADER
 Bootstrap: docker
-From: ubuntu:18.04
+From: ubuntu:20.04
 
 # SECTIONS
 %post
 
-    echo $SHELL
-    
-    # *** Switch to Non-interactive Mode
+    # *** Non-interactive Mode (Take Default Values)
     export DEBIAN_FRONTEND=noninteractive
-    
-    $SHELL
-    
+       
     # *** OS Upgrade & Install
-    #apt update && apt upgrade -y
-    #apt install -y --no-install-recommends \
-	#	build-essential \
-	#	ca-certificates \
-	#	git \
-	#	wget
-    
-    # *** Reconfigure Shell to Dash
-    dpkg-reconfigure dash
-    
-    $SHELL
+    apt update && apt upgrade -y
+    apt install -y --no-install-recommends \
+		build-essential \
+		ca-certificates \
+		git \
+		wget
     
     # *** Cleanup
     apt clean && \
     rm -rf /var/lib/apt/lists/*
- 
+
 %labels
     Author: "Adeel Akram <adeel.chep@gmail.com>"
+    Dated : 2022-01-01
 
 %help
-
     SingularityCE for Developers
     
     * Build a container from .def file
