@@ -1,44 +1,7 @@
 Bootstrap: library
 From: ubuntu:20.04
 
-%help
-    This Singularity definition contains Ubuntu 20.04, Anaconda 3 and TensorFlow 2.3.
-    
-    Use below commands:
 
-    *Build singularity container* - This will build an immutable container (recommended in production environments):
-    sudo singularity build <mysingularity_name>.sif Singularity.def
-
-    *To build development container* - Where you can install additional components as needed:
-    sudo singularity build --sandbox <mysingularity_name>/ Singularity.def
-
-    *Shell into singularity container*
-    sudo singularity shell --contain --writable <mysingularity_name>/
-
-    --writable option must be provided to install any packages.
-    You cannot use --writable option with immutable containers
-
-    *Exec into singularity container*- To run any command from host inside container
-    sudo singularity exec --contain <mysingularity_name>/ env
-
-    *Run singularity container in background and access notebook* - This will run %starscript section commands
-    sudo singularity instance start <mysingularity_name>/ demotest
-
-    *Check running instances* - This should list demotest instance started above
-    sudo singularity instance list
-
-    *Get the token to access notebook locally* - copy the listed token
-    sudo singularity exec instance://demotest jupyter notebook list
-
-    If you are running singularity instance in remote machine.
-    Execute below command to establish tunnel to forward traffic from remote machine to localhost
-    Ex: ssh -L 8888:localhost:8888 <remote_machine_name>
-
-    Access the given url from your localhost and enter the access token
-    Ex: localhost:8888
-    
-    *Run Jupyter from SeSEGPU Container*
-    singularity run --nv sesegpu.sif -c "conda activate tf-gpu && jupyter lab --ip=127.0.0.1 --port=$1"
 
 
 %files
@@ -64,14 +27,8 @@ From: ubuntu:20.04
 	
 	
 	# Installing Anaconda3 (Silent Mode).
-	# wget -c https://repo.anaconda.com/archive/Anaconda3-2020.02-Linux-x86_64.sh -O $HOME/anaconda.sh
-	# bash $HOME/anaconda.sh -bpf $HOME/anaconda
-	# wget -c https://repo.anaconda.com/archive/Anaconda3-2020.02-Linux-x86_64.sh -O anaconda.sh
-	# bash anaconda.sh -bp /opt/anaconda/
-	
-	wget -c https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
-	bash miniconda.sh -bp /opt/anaconda
-	
+	wget -c https://repo.anaconda.com/archive/Anaconda3-2020.02-Linux-x86_64.sh -O anaconda.sh
+	bash anaconda.sh -bp /opt/anaconda/
 	
 	# Load Anaconda Environment Variables
 	. /opt/anaconda/etc/profile.d/conda.sh
@@ -141,3 +98,43 @@ From: ubuntu:20.04
 
 %labels
     Author: "Adeel Akram <adeel.chep@gmail.com>"
+
+%help
+    This Singularity definition contains Ubuntu 20.04, Anaconda 3 and TensorFlow 2.3.
+    
+    Use below commands:
+
+    *Build singularity container* - This will build an immutable container:
+    sudo singularity build <mysingularity_name>.sif Singularity.def
+
+    *To build development container* - Where you can install additional components as needed:
+    sudo singularity build --sandbox <mysingularity_name>/ Singularity.def
+
+    *Shell into singularity container*
+    sudo singularity shell --contain --writable <mysingularity_name>/
+
+    --writable option must be provided to install any packages.
+    You cannot use --writable option with immutable containers
+
+    *Exec into singularity container*- To run any command from host inside container
+    sudo singularity exec --contain <mysingularity_name>/ env
+
+    *Run singularity container in background and access notebook* - This will run %starscript 
+    section commands.    
+    sudo singularity instance start <mysingularity_name>/ demotest
+
+    *Check running instances* - This should list demotest instance started above
+    sudo singularity instance list
+
+    *Get the token to access notebook locally* - copy the listed token
+    sudo singularity exec instance://demotest jupyter notebook list
+
+    If you are running singularity instance in remote machine.
+    Execute below command to establish tunnel to forward traffic from remote machine to localhost
+    Ex: ssh -L 8888:localhost:8888 <remote_machine_name>
+
+    Access the given url from your localhost and enter the access token
+    Ex: localhost:8888
+    
+    *Run Jupyter from SeSEGPU Container*
+    singularity run --nv sesegpu.sif -c "conda activate tf-gpu && jupyter lab --ip=127.0.0.1 --port=$1"

@@ -1,0 +1,43 @@
+# HEADER
+Bootstrap: docker
+From: ubuntu:18.04
+
+# SECTIONS
+%post
+
+    echo $SHELL
+    
+    # *** Switch to Non-interactive Mode
+    export DEBIAN_FRONTEND=noninteractive
+    
+    $SHELL
+    
+    # *** OS Upgrade & Install
+    #apt update && apt upgrade -y
+    #apt install -y --no-install-recommends \
+	#	build-essential \
+	#	ca-certificates \
+	#	git \
+	#	wget
+    
+    # *** Reconfigure Shell to Dash
+    dpkg-reconfigure dash
+    
+    $SHELL
+    
+    # *** Cleanup
+    apt clean && \
+    rm -rf /var/lib/apt/lists/*
+ 
+%labels
+    Author: "Adeel Akram <adeel.chep@gmail.com>"
+
+%help
+
+    SingularityCE for Developers
+    
+    * Build a container from .def file
+    $ sudo singularity build ubuntu.sif ubuntu.def
+    
+    * Build a sandbox container from .def file
+    $ sudo singularity build --sandbox ubuntu.sif ubuntu.def
