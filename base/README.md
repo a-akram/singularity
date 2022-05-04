@@ -1,12 +1,8 @@
-## **Singularity**
-[Singularity](https://sylabs.io/singularity/) is a container platform. It allows you to create and run containers that package up pieces of software in a way that is portable and reproducible. You can build a container using Singularity on your laptop, and then run it on many of the largest HPC clusters in the world, local university or company clusters, a single server, in the cloud, or on a workstation down the hall. Your container is a single file, and you don’t have to worry about how to install all the software you need on each different operating system.
+## Base Image for Containers
 
-- Free, cross-platform and open-source platform for OS-level virtualization (_a.k.a_ **containerization**)
-- Provides software __portability__ and __reproducibility__
-- Main use is in an **HPC** environment but a local use works just fine
-- Two versions exists: Pro Edition, and Community Edition (CE)
+### Fetching Base Images from DockerHub
 
-## Singularity Definition Files
+The important thing to note is the fetching the base image for the container _e.g._ `From: debian:buster` or `From: ubuntu:bionic` will fetch Debian 10.10 or Ubuntu 18.04 LTS from DockerHub, respectively.
 
 ```bash
 # HEADER
@@ -18,22 +14,10 @@ From: ubuntu:18.04
 
 ```
 
-
-### (+) Fetching Base Images from DockerHub
-
-The important thing to note is the fetching the base image for the container _e.g._ `From: debian:buster` or `From: ubuntu:bionic` will fetch Debian 10.10 and Ubuntu 18.04 LTS. Important headers are the following:
+### (+) Debian/Ubuntu Base Image from DockerHub
 
 ```bash
-# Fetch Ubuntu 18.04 LTS
-Bootstrap: docker
-From: ubuntu:bionic              # Either, use name of OSDistro
-
-Bootstrap: docker
-From: ubuntu:18.04               # Or, use numeral of OSDistro
-```
-
-```bash
-# Fetch Debian 10
+# Fetch Debian 10.10
 Bootstrap: docker
 From: debian:buster              # Either, use name of OSDistro
 
@@ -41,11 +25,77 @@ Bootstrap: docker
 From: ubuntu:10.10               # Or, use numeral of OSDistro
 ```
 
-### (+) Fetching Base Images from Container Library
+```bash
+# Fetch Ubuntu 18.04
+Bootstrap: docker
+From: ubuntu:bionic              # Either, use name of OSDistro
 
+Bootstrap: docker
+From: ubuntu:18.04               # Or, use numeral of OSDistro
+```
+
+### (+) Cuda Base Image from DockerHub
+
+The Nividia provides official base images on DockerHub for [CUDA](https://hub.docker.com/r/nvidia/cuda) which are build on top of Ubuntu Linux (LTS) distribution. There are three CUDA flavours available:
+
+- `base`: Includes the CUDA runtime (cudart)
+- `runtime`: Builds on the `base` and includes the CUDA math libraries, and NCCL. A runtime image that also includes cuDNN is available.
+- `devel`: Builds on the `runtime` and includes headers, development tools for building CUDA images. These images are particularly useful for multi-stage builds.
+
+The latest _CUDA (11.6) + Ubuntu (20.04)_ base image can be feteched in one of above flavours
 
 ```bash
-# Fetch Ubuntu 18.04 LTS
+# Fetch a Base Flavour
+Bootstrap: docker
+From: 11.6.0-base-ubuntu20.04
+```
+
+```bash
+# Fetch a Runtime Flavour
+Bootstrap: docker
+From: 11.6.0-runtime-ubuntu20.04
+```
+
+```bash
+# Fetch a Devel Flavour (Mostly required)
+Bootstrap: docker
+From: 11.6.0-devel-ubuntu20.04
+```
+
+
+### (+) Aanconda Base Image from DockerHub
+
+The Anaconda Inc. provides official base images on DockerHub for both [Anaconda3](https://hub.docker.com/r/continuumio/anaconda3) and [Miniconda3](https://hub.docker.com/r/continuumio/miniconda3) which are built on top of Debian Linux distribution. Both can be feteched from their official channel on [DockerHub](https://hub.docker.com/u/continuumio)
+
+```bash
+# Fetch Anaconda (Debian Based)
+Bootstrap: docker
+From: From: continuumio/anaconda3
+```
+
+```bash
+# Fetch Miniconda (Debian Based)
+Bootstrap: docker
+From: From: continuumio/miniconda3
+```
+
+
+
+
+
+
+
+
+
+
+
+
+### Fetching Base Images from Container Library
+
+Alternatively, one can also fetch a base image from container library hosted by Singularity.
+
+```bash
+# Fetch Ubuntu 18.04
 Bootstrap: library
 From: ubuntu:bionic              # Either, use name of OSDistro
 
@@ -54,7 +104,7 @@ From: ubuntu:18.04               # Or, use numeral of OSDistro
 ```
 
 ```bash
-# Fetch Debian 10
+# Fetch Debian 10.10
 Bootstrap: library
 From: debian:buster              # Either, use name of OSDistro
 
@@ -62,65 +112,81 @@ Bootstrap: library
 From: ubuntu:10.10               # Or, use numeral of OSDistro
 ```
 
-
-
-## (+) Example Definition
+## Example Miniconda Singularity Definition
 
 ```bash
 # HEADER
 Bootstrap: docker
-From: debian:buster
+From: continuumio/miniconda3
 
 # SECTIONS
+%files
+    README.md
+    setup.py
+    gpu_environment.yml
+    
 %post
-
+    
+    # *** Non-interactive Shell
+	export DEBIAN_FRONTEND=noninteractive
+    
+    # *** Reconfigure Shell (or %post -c /bin/bash)
+    dpkg-reconfigure dash
+    
     # *** OS Upgrade & Install
     apt update && apt upgrade -y
-    apt install -y \
+    apt install -y git wget \
         build-essential \
-        git \
-        curl \
-        vim \
-        wget \
-        cmake \
-        ca-certificates
-
-    # *** Setting Up FairSoft
-    mkdir -p /fairsoft/src /fairsoft/build /fairsoft/install
-    cd /fairsoft
-    git clone -b apr21p1 https://github.com/FairRootGroup/FairSoft src
+		ca-certificates \
+        libgl1-mesa-glx \
+        libegl1-mesa \
+		libxrandr2 \
+		libxss1 \
+		libxcursor1 \
+		libxcomposite1 \
+		libasound2 \
+		libxi6 \
+		libxtst6
+	
+	# Load Anaconda Environment Variables
+	. /opt/conda/etc/profile.d/conda.sh
+	
+	# Update Conda
+	conda update conda
+	
+	# *** Setting Up Envrionmnet
+    conda env create -f gpu_environment.yml python=3.8
+    conda activate exatrkx-gpu
+    pip install -e .
     
-    src/legacy/setup-ubuntu.sh
-    src/bootstrap-cmake.sh /usr/local
-
-    cmake -S ./src -B ./build -C ./src/FairSoftConfig.cmake -DCMAKE_INSTALL_PREFIX=./install
-    cmake --build ./build -j8
-
-    # *** Test Installation
-    du -hs /fairsoft/install
-
+    # *** Setup Conda Init ***
+	mv ~/.bashrc ~/.bashrcold
+	conda init
+	cat ~/.bashrc >> /etc/conda.init
+	echo conda activate exatrkx-gpu >> /etc/conda.init
+	conda clean -afy
+	mv ~/.bashrcold ~/.bashrc
+	rm *.py *.yml *.md
+	
     # *** Cleanup
-    rm -rf /fairsoft/src /fairsoft/build
-```
+    apt clean && \
+    rm -rf /var/lib/apt/lists/*
+    
+%environment
+	action="${1##*/}"
+	if [ "$action" = "shell" ]; then
+		if [ "${SINGULARITY_SHELL:-}" = "/bin/bash" ]; then
+			set -- --noprofile --init-file /etc/conda.init
+		elif test -z "${SINGULARITY_SHELL:-}"; then
+			export SINGULARITY_SHELL=/bin/bash
+			set -- --noprofile --init-file /etc/conda.init
+		fi
+	fi	
 
-## Building Containers
+%runscript
+	BASH_ENV=/etc/conda.init exec /bin/bash --noprofile --init-file /etc/conda.init "$@"
 
-```bash
-# Clone the Repository
-$ git clone git@gitlab.com:uuanalysis/singularity.git
-$ cd singulairty
-
-# Now build containers one by one
-$ sudo singularity build fairsoft.sif fairsoft.def
-$ sudo singularity build fairroot.sif fairroot.def
-$ sudo singularity build pandaroot.sif pandaroot.def
-
-# Remove fairsoft, fairroot (You can keep it for future)
-$ rm fairsoft.sif fairroot.def
-```
-## Run Containers
-
-```bash
-# run PandaRoot
-$ ./root.sh macro.c
+%labels
+    Author: Adeel Akram <adeel.chep@gmail.com>
+    Dated : 01-01-2022
 ```
