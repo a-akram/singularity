@@ -1,6 +1,6 @@
 # HEADER
 Bootstrap: docker
-From: ubuntu:20.04
+From: continuumio/anaconda3
 
 # SECTIONS
 %files
@@ -30,19 +30,9 @@ From: ubuntu:20.04
 		libasound2 \
 		libxi6 \
 		libxtst6
-		
-	
-    
-	# Installing Anaconda3 (Silent Mode)
-	
-	# wget -c https://repo.anaconda.com/archive/Anaconda3-2021.11-Linux-x86_64.sh -O anaconda.sh
-	# wget -c https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O anaconda.sh
-	wget -c https://repo.anaconda.com/miniconda/Miniconda3-py38_4.11.0-Linux-x86_64.sh -O anaconda.sh
-	
-	bash anaconda.sh -bp /opt/anaconda/
 	
 	# Load Anaconda Environment Variables
-	. /opt/anaconda/etc/profile.d/conda.sh
+	. /opt/conda/etc/profile.d/conda.sh
 	
 	# Update Conda
 	conda update conda
@@ -59,11 +49,11 @@ From: ubuntu:20.04
 	echo conda activate exatrkx-gpu >> /etc/conda.init
 	conda clean -afy
 	mv ~/.bashrcold ~/.bashrc
-	rm *.py *.yml *.md
 	
     # *** Cleanup
     apt clean && \
     rm -rf /var/lib/apt/lists/*
+    rm *.sh *.yml *.md
     
 %environment
 	action="${1##*/}"
