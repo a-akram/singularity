@@ -1,4 +1,4 @@
-name: exatrkx-gpu
+name: exatrkx
 
 channels:
     - rapidsai
@@ -21,4 +21,3 @@ dependencies:
     - faiss-gpu
     - cudf=21.12
     - cugraph=21.12
-    

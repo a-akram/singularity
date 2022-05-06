@@ -1,11 +1,11 @@
-name: exatrkx-cpu
+name: exatrkx
 
 channels:
     - pytorch
     - pyg
     - defaults
     - conda-forge
-    
+
 dependencies:
     - pip
     - numpy
