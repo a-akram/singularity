@@ -1,4 +1,5 @@
 #!/bin/bash
+
 export CUDA=cu101
 export TORCH=1.6.0
 

@@ -49,11 +49,11 @@ From: continuumio/anaconda3
 	echo conda activate exatrkx-gpu >> /etc/conda.init
 	conda clean -afy
 	mv ~/.bashrcold ~/.bashrc
+	rm -f *.sh *.yml *.md
 	
     # *** Cleanup
     apt clean && \
     rm -rf /var/lib/apt/lists/*
-    rm *.sh *.yml *.md
     
 %environment
 	action="${1##*/}"

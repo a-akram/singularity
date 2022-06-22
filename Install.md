@@ -88,6 +88,7 @@ echo 'export PATH=/usr/local/singularity/bin:$PATH' >> ~/.bashrc && \
 
 Now, it is easy to remove an old version (just `sudo rm -rf /usr/local/singularity` or `sudo rm -rf /opt/singularity`). 
 
+___
 ## Installation (OLD)
 
 ## Step 1: run the script below to remove your existing Singularity:

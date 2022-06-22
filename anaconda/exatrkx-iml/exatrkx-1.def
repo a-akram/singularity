@@ -3,7 +3,6 @@ BootStrap: docker
 From: nvidia/cuda:10.1-devel-ubuntu18.04
 
 # SECTIONS
-    
 %post
 	
 	# *** Environment Variables During Build

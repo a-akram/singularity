@@ -1,4 +1,5 @@
-## **Singularity**
+## Singularity Container
+
 [Singularity](https://sylabs.io/singularity/) is a container platform. It allows you to create and run containers that package up pieces of software in a way that is portable and reproducible. You can build a container using Singularity on your laptop, and then run it on many of the largest HPC clusters in the world, local university or company clusters, a single server, in the cloud, or on a workstation down the hall. Your container is a single file, and you don’t have to worry about how to install all the software you need on each different operating system.
 
 - Free, cross-platform and open-source platform for OS-level virtualization (_a.k.a_ **containerization**)

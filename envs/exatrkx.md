@@ -8,8 +8,8 @@ Following is the summary of instructions specific to `exatrkx` environment (same
 ---
 
 - **NOTE:** [According to Official Guide](https://horovod.readthedocs.io/en/latest/conda.html)
-- **NOTE:** Specific versions of packages are important to successfully build HOROVOD
-- **NOTE:** Copy and paste commands successively.
+- **NOTE:** specific versions of packages are important to successfully build HOROVOD
+- **NOTE:** copy and paste commands successively.
 
 ### (+) - Creating Conda Environment
 ---

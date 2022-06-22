@@ -262,3 +262,4 @@ dependencies:
     - werkzeug==1.0.1
     - wrapt==1.12.1
     - yarl==1.6.3
+prefix: /home/adeel/anaconda/envs/exatrkx

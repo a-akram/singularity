@@ -1,15 +1,18 @@
 Bootstrap: library
 From: ubuntu:20.04
 
-
-
-
 %files
     tf-gpu.yaml
 
-
 %post -c /bin/bash
-
+	
+	# Switch to Non-interactive Mode
+	export DEBIAN_FRONTEND=noninteractive
+    
+    # Reconfigure Shell (or %post -c /bin/bash)
+    # dpkg-reconfigure dash
+    
+    # OS Upgrade & Install
 	apt-get update && apt-get -y upgrade
 	apt-get -y install \
 		build-essential \
@@ -22,10 +25,6 @@ From: ubuntu:20.04
 		libxrender1 \
 		git
 	
-	rm -rf /var/lib/apt/lists/*
-	apt-get clean
-	
-	
 	# Installing Anaconda3 (Silent Mode).
 	wget -c https://repo.anaconda.com/archive/Anaconda3-2020.02-Linux-x86_64.sh -O anaconda.sh
 	bash anaconda.sh -bp /opt/anaconda/
@@ -33,16 +32,12 @@ From: ubuntu:20.04
 	# Load Anaconda Environment Variables
 	. /opt/anaconda/etc/profile.d/conda.sh
 	
-	
 	# Conda configuration of channels from .condarc file
 	conda config --file /.condarc --add channels defaults
 	conda config --file /.condarc --add channels conda-forge
 	
-	
 	# Update Conda
 	conda update conda
-	
-	
 	
 	# Either, create an environment from .YAML files.
 	conda env create -f tf-gpu.yaml
@@ -74,11 +69,11 @@ From: ubuntu:20.04
 	echo conda activate tf-gpu >> /etc/conda.init
 	conda clean -t
 	mv ~/.bashrcold ~/.bashrc
+	rm -f *.sh *.yaml *.deb
 	
-	
-	# Remove Downloaded Files
-	rm -f *-Linux-x86_64.sh *.yaml *.deb
-
+    # *** Cleanup
+    apt clean && \
+    rm -rf /var/lib/apt/lists/*
 
 %environment
 	action="${1##*/}"

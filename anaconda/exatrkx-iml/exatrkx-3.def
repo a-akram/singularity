@@ -1,12 +1,8 @@
-# HEADER
-# -----------------------------------------------------------------------------	
-
+# HEADER	
 BootStrap: docker
 From: nvidia/cuda:10.1-devel-ubuntu18.04
 
 # SECTIONS
-# -----------------------------------------------------------------------------
-
 %setup
 
 # During the build process, commands in the %setup section are first executed 

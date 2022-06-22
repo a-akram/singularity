@@ -7,8 +7,7 @@ From: ubuntu:18.04
 
     # *** OS Upgrade
     export DEBIAN_FRONTEND=noninteractive
-    apt-get update
-    apt-get -y upgrade
+    apt update && apt upgrade -y
     apt-get -y --no-install-recommends install sed curl ca-certificates wget xz-utils bzip2 gzip unzip tar file
     apt-get -y --no-install-recommends install python3 g++ gcc gfortran make patch git
     apt-get -y --no-install-recommends install cmake hostname lsb-release
