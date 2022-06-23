@@ -1,0 +1,24 @@
+# HEADER
+Bootstrap: localimage
+From: spack.sif
+
+# SECTIONS
+%post
+    
+    export DEBIAN_FRONTEND=noninteractive
+    
+    # *** Setting Up Spack
+    . spack/share/spack/setup-env.sh
+    
+    # *** Installing a Spec
+    spack spec py-torch@1.8.2+cuda~caffe2~valgrind~distributed~openmp ^cuda@10.1.243
+    spack install py-torch@1.8.2+cuda~caffe2~valgrind~distributed~openmp ^cuda@10.1.243
+    
+    
+%environment
+    . spack/share/spack/setup-env.sh
+    
+    
+%runscript
+    exec /bin/bash --noprofile "$@"
+

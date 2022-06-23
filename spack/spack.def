@@ -1,0 +1,35 @@
+# HEADER
+Bootstrap: docker
+From: ubuntu:18.04
+
+# SECTIONS
+%post
+
+    # *** OS Upgrade & Install
+    export DEBIAN_FRONTEND=noninteractive
+    apt update && apt upgrade -y
+    apt install -y --no-install-recommends \
+        build-essential \
+        bash \
+        python3 python3-dev python3-pip \
+        tar gzip unzip zstd file gnupg2 bzip2 \
+        patch \
+        git \
+        curl \
+        vim \
+        wget \
+        make cmake \
+        ca-certificates \
+        gfortran
+    
+    # *** Setting Up Spack
+    git clone -c feature.manyFiles=true https://github.com/spack/spack.git
+    . spack/share/spack/setup-env.sh
+    
+    # *** Init Spack
+    spack spec zlib
+    
+    # *** Cleanup
+    apt clean && \
+    rm -rf /var/lib/apt/lists/*
+

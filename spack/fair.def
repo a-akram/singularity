@@ -1,0 +1,44 @@
+# HEADER
+Bootstrap: localimage
+From: spack.sif
+
+# SECTIONS
+%post
+    
+    export DEBIAN_FRONTEND=noninteractive
+    
+    # *** Setting Up Spack
+    . spack/share/spack/setup-env.sh
+    
+    # *** Installing a Spec
+    
+    # *** The FairSoft
+    git clone -b dev https://github.com/FairRootGroup/FairSoft /opt/FairSoft
+    cd /opt/FairSoft
+    
+    # Run the Setup
+    . thisfairsoft.sh --setup
+    
+    # Activate Spack in your current shell
+    # bash thisfairsoft.sh
+    
+    # Verify Spack
+    spack repo list
+    
+    # *** Create FairSoft env from dev
+    spack env create fairsoft env/dev/sim/spack.yaml
+    spack env list
+    spack env activate -p fairsoft
+    spack install
+    
+    # *** OS Cleanup
+    apt-get -y clean && \
+    rm -rf /var/lib/apt/lists/*
+    
+    
+%environment
+    . spack/share/spack/setup-env.sh
+    
+    
+%runscript
+    exec /bin/bash --noprofile "$@"
