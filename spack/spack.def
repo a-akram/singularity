@@ -33,3 +33,16 @@ From: ubuntu:18.04
     apt clean && \
     rm -rf /var/lib/apt/lists/*
 
+%runscript
+    echo "Ubuntu 18.04 with Spack"
+
+%help
+
+    Container for Building PyTorch using Spack Package Manager.
+    
+    Build .SIF Container from Definition
+    $ sudo singularity build spack.sif spack.def
+    
+    Build Sandbox Container from Definition
+    $ sudo singularity build --sandbox spack.sif spack.def
+
