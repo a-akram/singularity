@@ -14,6 +14,13 @@ From: ubuntu:18.04
     
     dpkg-reconfigure dash
     
+    # *** Setting Up Spack
+    git clone -c feature.manyFiles=true https://github.com/spack/spack.git
+    . spack/share/spack/setup-env.sh
+
+    # *** Testing
+    spack spec zlib
+    
     # *** The FairSoft
     git clone -b dev https://github.com/FairRootGroup/FairSoft /opt/FairSoft
     cd /opt/FairSoft
