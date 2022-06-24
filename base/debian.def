@@ -38,8 +38,8 @@ From: debian:10.12
 %help
     SingularityCE for Developers
     
-    * Build a container from .def file
+    Build .SIF Container from Definition
     $ sudo singularity build debian.sif debian.def
     
-    * Build a sandbox container from .def file
+    Build Sandbox Container from Definition
     $ sudo singularity build --sandbox debian.sif debian.def

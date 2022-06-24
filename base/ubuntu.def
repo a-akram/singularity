@@ -38,8 +38,8 @@ From: ubuntu:20.04
 %help
     SingularityCE for Developers
     
-    * Build a container from .def file
+    Build .SIF Container from Definition
     $ sudo singularity build ubuntu.sif ubuntu.def
     
-    * Build a sandbox container from .def file
+    Build Sandbox Container from Definition
     $ sudo singularity build --sandbox ubuntu.sif ubuntu.def
