@@ -5,14 +5,35 @@ From: spack.sif
 # SECTIONS
 %post
     
+    # *** OS-level Configs    
     export DEBIAN_FRONTEND=noninteractive
     
     # *** Setting Up Spack
     . spack/share/spack/setup-env.sh
     
-    # *** Installing a Spec
-    spack spec py-torch@1.8.2+cuda~caffe2~valgrind~distributed~openmp ^cuda@10.1.243
-    spack install py-torch@1.8.2+cuda~caffe2~valgrind~distributed~openmp ^cuda@10.1.243
+    # *** Evns: Spack Environments
+    spack env create pyt
+    spack env activate -p pyt
+    
+    # *** Spec: CPU version of PyTorch
+    # spack spec py-torch@1.10.2 -cuda -rocm -distributed -caffe2 -metal -mkldnn -openmp -nnpack -qnnpack -xnnpack -onnx_ml -valgrind
+    # spack add //
+    # spack concretize
+    # spack install
+    
+    # *** Spec: GPU version of PyTorch
+    # spack spec py-torch@1.10.2 cuda_arch=30 +cuda -rocm +distributed -caffe2 -metal -mkldnn -openmp -nnpack -qnnpack -xnnpack -onnx_ml -valgrind ^cuda@11.3
+    # spack add //
+    # spack concretize
+    # spack install
+    
+    
+    # *** Directly Install
+    spack spec py-torch@1.10.2 -caffe2 -cuda -rocm -distributed -onnx_ml -valgrind
+    spack install py-torch@1.10.2 -caffe2 -cuda -rocm -distributed -onnx_ml -valgrind
+    
+    # spack spec py-torch@1.10.2 cuda_arch=30 +cuda -rocm +distributed -caffe2 -openmp -valgrind ^cuda@11.3
+    # spack install py-torch@1.10.2 cuda_arch=30 +cuda -rocm +distributed -caffe2 -openmp -valgrind ^cuda@11.3
     
     
 %environment
@@ -21,4 +42,80 @@ From: spack.sif
     
 %runscript
     exec /bin/bash --noprofile "$@"
+    
+
+%help
+    
+    # Spack Environments
+    
+    *** create an env
+    spack env create pyt
+    
+    *** status of an env
+    $ spack env status
+    
+    *** activate an env
+    $ spack env activate -p pyt  # OR
+    $ spacktivate -p pyt
+    $ spack env status
+    
+    
+    *** installing in an env
+    
+    * show what would be installed, given a spec
+    $ spack spec
+    
+    * add a spec to an environment
+    $ spack add <spec>
+    
+        e.g.
+    
+    $ spack add py-torch@1.10.2 -cuda -rocm -distributed -onnx_ml -valgrind
+    
+    * concretize an environment and write a lockfile
+    $ spack concretize
+    
+    * build and install packages
+    $ spack install
+    
+    * remove specs from an environment
+    $ spack remove <spec>
+    
+        e.g.
+    
+    $ spack remove py-torch@1.10.2 -cuda -rocm -distributed -onnx_ml -valgrind
+    
+    
+    *** deactivate an env
+    $ spack env deactivate  # OR
+    $ despacktivate
+    $ spack env status
+    
+    *** add, concretize and install specs
+    spack add py-torch@1.10.2 -cuda -rocm -distributed -onnx_ml -valgrind
+    spack concretize
+    spack install
+    
+    # spack install (add+concretize+install)
+    spack install py-torch@1.10.2 -cuda -rocm -distributed -onnx_ml -valgrind
+    
+    *** install, uninstall pkgs in  an env
+    $ spack install <pkg_name>
+    $ spack uninstall <pkg_name>
+    
+    
+    # Specs & dependencies
+       
+    @Version : Package Version Specifier (e.g. py-torch@1.10.2)
+    %Compiler: Compiler Specifier (e.g. %gcc@7.5.5)
+    +Variant : Variant Specifier: To Include (e.g. +cuda)
+    -Variant : Variant Specifier: To Exclude (e.g. -rocm)
+    ~Variant : Variant Specifier: To Exclude (e.g. ~rocm)
+    ^Package : Dependency Specifier (e.g. ^python@3.8.0)
+    
+    # Notes on PyTorch Variants
+    
+    +cuda: also install ["cuda_arch=<arch_name>", "cudnn", "magma", "nccl"]
+    +rocm: also install ["nccl"]
+    +distributed: also install ["mpi", "gloo", "tensorpipe"]
 
