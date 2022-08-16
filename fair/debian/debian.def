@@ -1,0 +1,45 @@
+# HEADER
+Bootstrap: docker
+From: debian:10.12
+
+# SECTIONS
+%post
+
+    # *** Non-interactive Shell
+	export DEBIAN_FRONTEND=noninteractive
+    
+    # *** Reconfigure Shell (or %post -c /bin/bash)
+    dpkg-reconfigure dash
+       
+    # *** OS Upgrade & Install
+    apt update && apt upgrade -y
+    apt install -y --no-install-recommends \
+		build-essential \
+		ca-certificates \
+		git \
+		wget
+    
+    # *** Cleanup
+    apt clean && \
+    rm -rf /var/lib/apt/lists/*
+    
+    # *** Creation Date
+    NOW=`date`
+    echo "export NOW=\"${NOW}\"" >> $SINGULARITY_ENVIRONMENT
+
+%runscript
+    echo "Creation Date: $NOW"
+    echo "Base Image: Debian 10.12"
+    
+%labels
+    Author: "Adeel Akram <adeel.chep@gmail.com>"
+    Dated : 2022-01-01
+
+%help
+    SingularityCE for Developers
+    
+    Build .SIF Container from Definition
+    $ sudo singularity build debian.sif debian.def
+    
+    Build Sandbox Container from Definition
+    $ sudo singularity build --sandbox debian.sif debian.def

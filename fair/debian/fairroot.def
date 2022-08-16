@@ -1,0 +1,47 @@
+# HEADER
+Bootstrap: localimage
+From: fairsoft.sif
+
+# SECTIONS
+%post
+
+    # *** Setting Up FairSoft
+    export SIMPATH=/fairsoft/install
+
+    # *** Setting up FairRoot
+    mkdir -p /fairroot/src /fairroot/build /fairroot/install
+    cd /fairroot
+    git clone -b v.18.6.7 https://github.com/FairRootGroup/FairRoot.git src
+
+    # *** (-) Build FairRoot
+    # cmake -S ./src -B ./build -DCMAKE_INSTALL_PREFIX=./install
+    # cmake --build ./build -j8
+
+    # *** (-) Install FairRoot
+    # cd ./build
+    # make install -j8  
+    # cd ..
+
+    # *** (+) Build FairRoot
+    cd ./build
+    cmake -DCMAKE_INSTALL_PREFIX=../install ../src
+    
+    # *** (+) Install FairRoot
+    make install -j8
+    cd ..
+
+    # *** Build Tests
+    # cmake --build ./build --target test
+
+    # *** Cleanup FairRoot
+    rm -rf /fairroot/src
+    rm -rf /fairroot/build
+    
+    # *** Cleanup Ubuntu
+    apt-get -y clean && \
+    rm -rf /var/lib/apt/lists/*
+
+%environment
+
+    # Export FairRoot
+    # export FAIRROOTPATH=/fairroot/install
