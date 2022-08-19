@@ -1,41 +1,40 @@
 # HEADER
 Bootstrap: localimage
-From: fairroot.sif
+From: fr_v18.6.7.sif
 
 # SECTIONS
 %setup
 
     mkdir ${SINGULARITY_ROOTFS}/pandaroot
-    cp -R ./v12.0.3 ${SINGULARITY_ROOTFS}/pandaroot
+    cp -R ./v13.0.0 ${SINGULARITY_ROOTFS}/pandaroot
 
 %post
 
-    # *** Export FairSoft & FairRoot
+    # *** Setting Up FairSoft & FairRoot
     export SIMPATH=/fairsoft/install
     export FAIRROOTPATH=/fairroot/install
 
-    # *** Setting up PandaRoot
+    # *** Setting Up PandaRoot
     mkdir /pandaroot/build /pandaroot/install
-
+    cd /pandaroot
+    mv v13.0.0 src
+    
     # *** Build PandaRoot
-    # cd /pandaroot
-    # cmake -S ./v12.0.3 -B ./build -DCMAKE_INSTALL_PREFIX=./install
-    # cmake --build ./build -j8   # note install is empty
+    cmake -S ./src -B ./build -DCMAKE_INSTALL_PREFIX=./install
+    cmake --build ./build -j8   # note `install/` will be empty
 
     # *** Install PandaRoot
-    # cd ./build && make install -j8
-    # cd ..
-
-    # OR, Build & Install PandaRoot
-    cd /pandaroot/build
-    cmake -DCMAKE_INSTALL_PREFIX=../install ../v12.0.3
-    make -j8 && make install
-
+    cmake --install ./build -j8
+    # cd ./build && make install -j8 && cd ..
+            
+    # *** Test Installation
+    du -hs /pandaroot/install
+    
     # *** Cleanup PandaRoot
     rm -rf /pandaroot/src 
     rm -rf /pandaroot/build
     
-    # *** Cleanup Ubuntu
+    # *** Cleanup OS
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -48,12 +47,7 @@ From: fairroot.sif
 
     exec /bin/bash --noprofile "$@"
 
-
 %labels
 
     Author: "Adeel Akram <adeel.akram@physics.uu.se>"
     Dated: 11-07-2021
-
-%help
-
-    PandaRoot container based on FairSoft and FairRoot containers.

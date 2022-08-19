@@ -6,13 +6,13 @@ From: debian:10.12
 %post
 
     # *** OS Upgrade & Install
-    export DEBIAN_FRONTEND=noninteractive
-    apt-get update
-    apt-get -y upgrade
-    apt-get -y --no-install-recommends install sed curl ca-certificates wget xz-utils bzip2 gzip unzip tar file
-    apt-get -y --no-install-recommends install python3 g++ gcc gfortran make patch git
-    apt-get -y --no-install-recommends install cmake hostname lsb-release
-
+    apt update && apt upgrade -y
+    apt install -y --no-install-recommends \
+		build-essential \
+		ca-certificates \
+		git \
+		wget
+    
     # *** Setting Up FairSoft
     mkdir -p /fairsoft/src /fairsoft/build /fairsoft/install
     cd /fairsoft
@@ -21,9 +21,9 @@ From: debian:10.12
     src/legacy/setup-debian.sh
     src/bootstrap-cmake.sh /usr/local
 
-    cmake -S ./src -B ./build -C ./src/FairSoftConfig.cmake -DCMAKE_INSTALL_PREFIX=./install
+    cmake -S ./src -B ./build -DCMAKE_INSTALL_PREFIX=./install -C ./src/FairSoftConfig.cmake
     cmake --build ./build -j8
-
+        
     # *** Test Installation
     du -hs /fairsoft/install
 
@@ -31,7 +31,7 @@ From: debian:10.12
     rm -rf /fairsoft/src
     rm -rf /fairsoft/build
     
-    # *** Cleanup Ubuntu
+    # *** Cleanup OS
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/*
 
