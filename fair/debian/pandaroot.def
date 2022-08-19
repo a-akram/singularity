@@ -24,7 +24,7 @@ From: fr_v18.6.7.sif
     cmake --build ./build -j8   # note `install/` will be empty
 
     # *** Install PandaRoot
-    cmake --install ./build -j8
+    cmake --install ./build
     # cd ./build && make install -j8 && cd ..
             
     # *** Test Installation
