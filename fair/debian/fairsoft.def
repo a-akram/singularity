@@ -20,19 +20,21 @@ From: debian:10.12
     
     src/legacy/setup-debian.sh
     src/bootstrap-cmake.sh /usr/local
-
+    
+    # *** Configure CMake
     cmake -S ./src -B ./build -DCMAKE_INSTALL_PREFIX=./install -C ./src/FairSoftConfig.cmake
-    cmake --build ./build -j8
+    
+    # *** Build & Install FairSoft
+    cmake --build ./build -j8  # it will install as well
         
     # *** Test Installation
     du -hs /fairsoft/install
 
     # *** Cleanup FairSoft
-    rm -rf /fairsoft/src
-    rm -rf /fairsoft/build
+    rm -rf ./build ./src 
     
     # *** Cleanup OS
-    apt-get -y clean && \
+    apt -y clean && \
     rm -rf /var/lib/apt/lists/*
 
 %environment

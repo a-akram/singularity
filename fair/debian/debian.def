@@ -13,22 +13,22 @@ From: debian:10.12
 		git \
 		wget
     
-    # *** Cleanup
-    apt clean && \
-    rm -rf /var/lib/apt/lists/*
-    
     # *** Creation Date
     NOW=`date`
     echo "export NOW=\"${NOW}\"" >> $SINGULARITY_ENVIRONMENT
+    
+    # *** Cleanup OS
+    apt -y clean && \
+    rm -rf /var/lib/apt/lists/*
 
 %runscript
     echo "Creation Date: $NOW"
     echo "Base Image: Debian 10.12"
     
 %labels
-    Author: "Adeel Akram <adeel.chep@gmail.com>"
-    Dated : 2022-01-01
-
+    Author: "Adeel Akram <adeel.akram@physics.uu.se>"
+    Dated: 15-08-2022
+    
 %help
     SingularityCE for Developers
     

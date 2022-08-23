@@ -23,8 +23,7 @@ From: fairroot.sif
     # cmake --build ./build -j8   # note install is empty
 
     # *** Install PandaRoot
-    # cd ./build && make install -j8
-    # cd ..
+    # cd ./build && make install -j8 && cd ..
 
     # OR, Build & Install PandaRoot
     cd /pandaroot/build

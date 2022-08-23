@@ -1,6 +1,6 @@
 # HEADER
 Bootstrap: localimage
-From: fs_apr21p2.sif
+From: fsapr21p2.sif
 
 # SECTIONS
 %post
@@ -12,24 +12,24 @@ From: fs_apr21p2.sif
     mkdir -p /fairroot/src /fairroot/build /fairroot/install
     cd /fairroot
     git clone -b v18.6.7 https://github.com/FairRootGroup/FairRoot.git src
-
-    # *** Build FairRoot
+    
+    # *** Configure CMake
     cmake -S ./src -B ./build -DCMAKE_INSTALL_PREFIX=./install
-    cmake --build ./build -j8   # note `install/` will be empty
+    
+    # *** Build FairRoot
+    cmake --build ./build -j8
     
     # *** Install FairRoot
-    # cmake --install ./build -j8
-    cd ./build && make install -j8 && cd ..
+    cmake --install ./build
         
     # *** Test Installation
     du -hs /fairroot/install
     
     # *** Cleanup FairRoot
-    rm -rf /fairroot/src
-    rm -rf /fairroot/build
+    rm -rf ./build # ./src 
     
     # *** Cleanup OS
-    apt-get -y clean && \
+    apt -y clean && \
     rm -rf /var/lib/apt/lists/*
 
 %environment

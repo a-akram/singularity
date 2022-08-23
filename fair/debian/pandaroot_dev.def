@@ -1,6 +1,6 @@
 # HEADER
 Bootstrap: localimage
-From: fr_v18.6.7.sif
+From: fr18.6.7.sif
 
 # SECTIONS
 %setup
@@ -18,24 +18,24 @@ From: fr_v18.6.7.sif
     mkdir /pandaroot/build /pandaroot/install
     cd /pandaroot
     mv dev src
-
-    # *** Build PandaRoot
+    
+    # *** Configure CMake
     cmake -S ./src -B ./build -DCMAKE_INSTALL_PREFIX=./install
-    cmake --build ./build -j8   # note `install/` will be empty
+    
+    # *** Build PandaRoot
+    cmake --build ./build -j8
 
     # *** Install PandaRoot
     cmake --install ./build
-    # cd ./build && make install -j8 && cd ..
             
     # *** Test Installation
     du -hs /pandaroot/install
     
     # *** Cleanup PandaRoot
-    rm -rf /pandaroot/src 
-    rm -rf /pandaroot/build
+    rm -rf ./build # ./src 
     
     # *** Cleanup OS
-    apt-get -y clean && \
+    apt -y clean && \
     rm -rf /var/lib/apt/lists/*
 
 %environment
@@ -50,4 +50,4 @@ From: fr_v18.6.7.sif
 %labels
 
     Author: "Adeel Akram <adeel.akram@physics.uu.se>"
-    Dated: 11-07-2021
+    Dated: 15-08-2022
