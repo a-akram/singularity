@@ -22,7 +22,7 @@ From: debian:10.12
     src/bootstrap-cmake.sh /usr/local
     
     # *** Configure CMake
-    cmake -S ./src -B ./build -DCMAKE_INSTALL_PREFIX=./install -C ./src/FairSoftConfig.cmake
+    cmake -S ./src -B ./build -C ./src/FairSoftConfig.cmake -DCMAKE_INSTALL_PREFIX=./install
     
     # *** Build & Install FairSoft
     cmake --build ./build -j8  # it will install as well
